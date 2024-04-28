@@ -27,11 +27,11 @@ export function usePostsPage() {
     isLoading.current = false;
   }, []);
 
-  const isLoadingFinished = posts.length === totalNumberOfPosts;
+  const areAllPostsFetched = posts.length === totalNumberOfPosts;
 
   return {
     loadNextPage,
-    isLoadingFinished,
+    areAllPostsFetched,
     posts,
   };
 }

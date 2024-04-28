@@ -4,7 +4,7 @@ import { usePostsPage } from './usePostsPage';
 export function usePostsLoading() {
   const loaderRef = useRef(null);
 
-  const { posts, loadNextPage, isLoadingFinished } = usePostsPage();
+  const { posts, loadNextPage, areAllPostsFetched } = usePostsPage();
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -28,6 +28,6 @@ export function usePostsLoading() {
   return {
     posts,
     loaderRef,
-    isLoadingFinished,
+    areAllPostsFetched,
   };
 }

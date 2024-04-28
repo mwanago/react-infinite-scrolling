@@ -1,7 +1,7 @@
 import { usePostsLoading } from './usePostsLoading';
 
 export const Posts = () => {
-  const { posts, loaderRef, isLoadingFinished } = usePostsLoading();
+  const { posts, loaderRef, areAllPostsFetched } = usePostsLoading();
 
   return (
     <div>
@@ -11,7 +11,7 @@ export const Posts = () => {
           <p>{post.body}</p>
         </div>
       ))}
-      {!isLoadingFinished && <div ref={loaderRef}>Loading...</div>}
+      {!areAllPostsFetched && <div ref={loaderRef}>Loading...</div>}
     </div>
   );
 };
