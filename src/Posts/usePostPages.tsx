@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { fetchPosts } from './fetchPosts';
 import { Post } from './Post';
 
-export function usePostsPage() {
+export function usePostPages() {
   const [posts, setPosts] = useState<Post[]>([]);
   const pageNumber = useRef(0);
   const isLoading = useRef(false);

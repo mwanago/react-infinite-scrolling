@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { usePostsPage } from './usePostsPage';
+import { usePostPages } from './usePostPages';
 
 export function usePostsLoading() {
   const loaderRef = useRef(null);
 
-  const { posts, loadNextPage, areAllPostsFetched } = usePostsPage();
+  const { posts, loadNextPage, areAllPostsFetched } = usePostPages();
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
