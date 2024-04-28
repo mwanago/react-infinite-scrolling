@@ -8,8 +8,8 @@ export function usePostsLoading() {
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
-      const target = entries[0];
-      if (target.isIntersecting) {
+      const target = entries.pop();
+      if (target?.isIntersecting) {
         loadNextPage();
       }
     });
