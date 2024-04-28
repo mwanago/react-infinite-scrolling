@@ -1,7 +1,7 @@
-import { usePosts } from './usePosts.tsx';
+import { usePostsLoading } from './usePostsLoading';
 
 export const Posts = () => {
-  const { posts, loaderRef, isFinished } = usePosts();
+  const { posts, loaderRef, isLoadingFinished } = usePostsLoading();
 
   return (
     <div>
@@ -11,7 +11,7 @@ export const Posts = () => {
           <p>{post.body}</p>
         </div>
       ))}
-      {!isFinished && <div ref={loaderRef}>Loading...</div>}
+      {!isLoadingFinished && <div ref={loaderRef}>Loading...</div>}
     </div>
   );
 };

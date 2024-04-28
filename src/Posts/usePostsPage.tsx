@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Post } from './Post';
+import { useCallback, useRef, useState } from 'react';
 import { fetchPosts } from './fetchPosts';
+import { Post } from './Post';
 
-export function usePosts() {
-  const loaderRef = useRef(null);
+export function usePostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const pageNumber = useRef(0);
   const isLoading = useRef(false);
@@ -15,41 +14,24 @@ export function usePosts() {
     if (isLoading.current) {
       return;
     }
-
     isLoading.current = true;
+
     const { posts, totalNumberOfPosts } = await fetchPosts(pageNumber.current);
     pageNumber.current = pageNumber.current + 1;
+
     setPosts((currentPosts) => {
       return [...currentPosts, ...posts];
     });
     setTotalNumberOfPosts(totalNumberOfPosts);
+
     isLoading.current = false;
   }, []);
 
-  const isFinished = posts.length === totalNumberOfPosts;
-
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      const target = entries[0];
-      if (target.isIntersecting) {
-        loadNextPage();
-      }
-    });
-
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
-    }
-
-    return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
-      }
-    };
-  }, [loadNextPage]);
+  const isLoadingFinished = posts.length === totalNumberOfPosts;
 
   return {
+    loadNextPage,
+    isLoadingFinished,
     posts,
-    loaderRef,
-    isFinished,
   };
 }
