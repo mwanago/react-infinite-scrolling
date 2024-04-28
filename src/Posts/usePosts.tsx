@@ -1,40 +1,29 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-const elementsPerPage = 10;
-
-interface Post {
-  id: number;
-  title: string;
-  body: string;
-}
+import { Post } from './Post';
+import { fetchPosts } from './fetchPosts';
 
 export function usePosts() {
   const loaderRef = useRef(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const pageNumber = useRef(0);
+  const isLoading = useRef(false);
   const [totalNumberOfPosts, setTotalNumberOfPosts] = useState<null | number>(
     null,
   );
 
-  const fetchPosts = useCallback(async () => {
-    const start = pageNumber.current * elementsPerPage;
-    const end = start + elementsPerPage;
+  const loadNextPage = useCallback(async () => {
+    if (isLoading.current) {
+      return;
+    }
 
-    const params = new URLSearchParams({
-      _start: String(start),
-      _end: String(end),
-    });
-
-    const response = await fetch(
-      `https://jsonplaceholder.typicode.com/posts?${params.toString()}`,
-    );
-    setTotalNumberOfPosts(Number(response.headers.get('x-total-count')));
-
-    const data = await response.json();
-    setPosts((currentPosts) => {
-      return [...currentPosts, ...data];
-    });
+    isLoading.current = true;
+    const { posts, totalNumberOfPosts } = await fetchPosts(pageNumber.current);
     pageNumber.current = pageNumber.current + 1;
+    setPosts((currentPosts) => {
+      return [...currentPosts, ...posts];
+    });
+    setTotalNumberOfPosts(totalNumberOfPosts);
+    isLoading.current = false;
   }, []);
 
   const isFinished = posts.length === totalNumberOfPosts;
@@ -43,7 +32,7 @@ export function usePosts() {
     const observer = new IntersectionObserver((entries) => {
       const target = entries[0];
       if (target.isIntersecting) {
-        fetchPosts();
+        loadNextPage();
       }
     });
 
@@ -56,7 +45,7 @@ export function usePosts() {
         observer.unobserve(loaderRef.current);
       }
     };
-  }, [fetchPosts]);
+  }, [loadNextPage]);
 
   return {
     posts,
