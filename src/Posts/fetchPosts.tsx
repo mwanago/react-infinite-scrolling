@@ -1,6 +1,4 @@
-const elementsPerPage = 20;
-
-export async function fetchPosts(pageNumber: number) {
+export async function fetchPosts(pageNumber: number, elementsPerPage = 20) {
   const start = pageNumber * elementsPerPage;
   const end = start + elementsPerPage;
 
