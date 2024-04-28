@@ -4,7 +4,7 @@ import { Post } from './Post';
 
 export function usePostPages() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const pageNumber = useRef(0);
+  const currentPageNumber = useRef(0);
   const isLoading = useRef(false);
   const [totalNumberOfPosts, setTotalNumberOfPosts] = useState<null | number>(
     null,
@@ -16,8 +16,8 @@ export function usePostPages() {
     }
     isLoading.current = true;
 
-    const { posts, totalNumberOfPosts } = await fetchPosts(pageNumber.current);
-    pageNumber.current = pageNumber.current + 1;
+    const { posts, totalNumberOfPosts } = await fetchPosts(currentPageNumber.current);
+    currentPageNumber.current = currentPageNumber.current + 1;
 
     setPosts((currentPosts) => {
       return [...currentPosts, ...posts];
