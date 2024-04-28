@@ -1,14 +1,12 @@
 import { usePosts } from './usePosts.tsx';
-import { useRef } from 'react';
 
 export const Posts = () => {
-  const loaderRef = useRef(null);
-  const { posts } = usePosts();
+  const { posts, loaderRef } = usePosts();
 
   return (
     <div>
       {posts?.map((post) => (
-        <div>
+        <div key={post.id}>
           <h3>{post.title}</h3>
           <p>{post.body}</p>
         </div>

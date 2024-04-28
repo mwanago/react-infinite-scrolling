@@ -9,6 +9,7 @@ interface Post {
 }
 
 export function usePosts() {
+  const loaderRef = useRef(null);
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const pageNumber = useRef(0);
@@ -31,7 +32,9 @@ export function usePosts() {
     totalNumberOfPosts.current = Number(response.headers.get('x-total-count'));
 
     const data = await response.json();
-    setPosts(data);
+    setPosts((currentPosts) => {
+      return [...(currentPosts || []), ...data];
+    });
     pageNumber.current = pageNumber.current + 1;
 
     setIsLoading(false);
@@ -39,10 +42,28 @@ export function usePosts() {
 
   useEffect(() => {
     fetchPosts();
+
+    const observer = new IntersectionObserver((entries) => {
+      const target = entries[0];
+      if (target.isIntersecting) {
+        fetchPosts();
+      }
+    });
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
   }, [fetchPosts]);
 
   return {
     posts,
     isLoading,
+    loaderRef,
   };
 }
