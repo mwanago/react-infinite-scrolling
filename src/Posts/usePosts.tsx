@@ -2,10 +2,17 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 const elementsPerPage = 10;
 
+interface Post {
+  id: number;
+  title: string;
+  body: string;
+}
+
 export function usePosts() {
-  const [posts, setPosts] = useState(null);
+  const [posts, setPosts] = useState<Post[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const pageNumber = useRef(0);
+  const totalNumberOfPosts = useRef<null | number>(null);
 
   const fetchPosts = useCallback(async () => {
     setIsLoading(true);
@@ -21,13 +28,13 @@ export function usePosts() {
     const response = await fetch(
       `https://jsonplaceholder.typicode.com/posts?${params.toString()}`,
     );
-    const totalNumberOfPosts = Number(response.headers.get('x-total-count'));
+    totalNumberOfPosts.current = Number(response.headers.get('x-total-count'));
 
     const data = await response.json();
     setPosts(data);
+    pageNumber.current = pageNumber.current + 1;
 
     setIsLoading(false);
-    console.log(response, totalNumberOfPosts);
   }, []);
 
   useEffect(() => {
