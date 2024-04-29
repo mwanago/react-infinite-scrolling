@@ -6,7 +6,7 @@ export const Posts = () => {
   return (
     <div>
       {posts?.map((post) => (
-        <div key={post.id}>
+        <div key={post.id} data-testid="post">
           <h3>{post.title}</h3>
           <p>{post.body}</p>
         </div>
